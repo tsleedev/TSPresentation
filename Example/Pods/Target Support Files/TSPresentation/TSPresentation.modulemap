@@ -1,0 +1,6 @@
+framework module TSPresentation {
+  umbrella header "TSPresentation-umbrella.h"
+
+  export *
+  module * { export * }
+}

@@ -1,0 +1,16 @@
+PODS:
+  - TSPresentation (0.1.0)
+
+DEPENDENCIES:
+  - TSPresentation (from `../`)
+
+EXTERNAL SOURCES:
+  TSPresentation:
+    :path: "../"
+
+SPEC CHECKSUMS:
+  TSPresentation: b53de15461dd0b5fb699dce458e79121cac25a20
+
+PODFILE CHECKSUM: 3be31b3dd13e718e7115fab32f64e5964211e277
+
+COCOAPODS: 1.11.0
