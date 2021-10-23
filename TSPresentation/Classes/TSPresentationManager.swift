@@ -56,7 +56,12 @@ extension TSPresentationManager: UIViewControllerTransitioningDelegate {
             frameSize: frameSize,
             dimColor: dimColor
         )
-        parentViewController = presented
+        if let navigationController = presented as? UINavigationController,
+           let rootViewController = navigationController.viewControllers.first {
+            parentViewController = rootViewController
+        } else {
+            parentViewController = presented
+        }
         removeGesture()
         if isNeedPanGesture {
             setPanGesture()
