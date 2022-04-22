@@ -34,6 +34,8 @@ extension TSPresentationAnimator: UIViewControllerAnimatedTransitioning {
             move(transitionContext: transitionContext)
         case .fadeIn:
             fade(transitionContext: transitionContext)
+        case .push:
+            push(transitionContext: transitionContext)
         }
     }
 }
@@ -100,5 +102,43 @@ private extension TSPresentationAnimator {
         }, completion: { _ in
             transitionContext.completeTransition(!transitionContext.transitionWasCancelled)
         })
+    }
+    
+    func push(transitionContext: UIViewControllerContextTransitioning) {
+        let formKey: UITransitionContextViewControllerKey = isPresentation ? .to : .from
+        let toKey: UITransitionContextViewControllerKey = !isPresentation ? .to : .from
+        guard
+            let parentController = transitionContext.viewController(forKey: toKey),
+            let controller = transitionContext.viewController(forKey: formKey)
+        else { return }
+        
+        if isPresentation {
+            transitionContext.containerView.addSubview(controller.view)
+        }
+        
+        let parentPresentedFrame = transitionContext.finalFrame(for: parentController)
+        let parentDismissedFrame = parentPresentedFrame.offsetBy(dx: parentPresentedFrame.width / -2, dy: 0)
+        let presentedFrame = transitionContext.finalFrame(for: controller)
+        let dismissedFrame = presentedFrame.offsetBy(dx: presentedFrame.width, dy: 0)
+        
+        let parentInitialFrame = isPresentation ? parentPresentedFrame : parentDismissedFrame
+        let parentFinalFrame = isPresentation ? parentDismissedFrame : parentPresentedFrame
+        let initialFrame = isPresentation ? dismissedFrame : presentedFrame
+        let finalFrame = isPresentation ? presentedFrame : dismissedFrame
+        
+        let animationDuration = transitionDuration(using: transitionContext)
+        parentController.view.frame = parentInitialFrame
+        controller.view.frame = initialFrame
+        UIView.animate(
+            withDuration: animationDuration,
+            animations: {
+                parentController.view.frame = parentFinalFrame
+                controller.view.frame = finalFrame
+            }, completion: { finished in
+                if !self.isPresentation && !transitionContext.transitionWasCancelled {
+                    controller.view.removeFromSuperview()
+                }
+                transitionContext.completeTransition(!transitionContext.transitionWasCancelled)
+            })
     }
 }

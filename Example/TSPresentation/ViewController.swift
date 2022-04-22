@@ -72,4 +72,11 @@ private extension ViewController {
         presentationManager.isNeedPanGesture = false
         moveToNext()
     }
+    
+    @IBAction func push(_ sender: UIButton) {
+        presentationManager.transitionStyle = .push
+        presentationManager.frameSize = .full
+        presentationManager.isNeedPanGesture = true
+        moveToNext()
+    }
 }

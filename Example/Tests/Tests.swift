@@ -1,5 +1,5 @@
 import XCTest
-import TSPresentation
+@testable import TSPresentation
 
 class Tests: XCTestCase {
     

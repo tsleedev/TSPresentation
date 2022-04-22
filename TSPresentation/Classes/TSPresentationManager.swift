@@ -14,6 +14,7 @@ public enum TSPresentationTransitionStyle {
     case rightToLeft
     case bottomToTop
     case fadeIn
+    case push
 }
 
 public enum TSPresentaionFrameSize {
