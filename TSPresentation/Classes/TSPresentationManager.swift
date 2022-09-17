@@ -124,8 +124,8 @@ extension TSPresentationManager: UIGestureRecognizerDelegate {
 }
 
 // MARK: - Gesture
-private extension TSPresentationManager {
-    func setEdgePanGesture() {
+extension TSPresentationManager {
+    public func setEdgePanGesture() {
         guard let view = parentViewController?.view else { return }
         
         let leftEdgeGesture = UIScreenEdgePanGestureRecognizer(target: self, action: #selector(handleLeftEdgeGesture(_:)))
@@ -133,14 +133,14 @@ private extension TSPresentationManager {
         view.addGestureRecognizer(leftEdgeGesture)
     }
     
-    func setPanGesture() {
+    public func setPanGesture() {
         guard let view = parentViewController?.view else { return }
         
         let panGesture = UIPanGestureRecognizer(target: self, action: #selector(handleLeftPanGesture(_:)))
         view.addGestureRecognizer(panGesture)
     }
     
-    func removeGesture() {
+    public func removeGesture() {
         guard let view = parentViewController?.view else { return }
         if let recognizers = view.gestureRecognizers {
             for recognizer in recognizers {
@@ -148,7 +148,10 @@ private extension TSPresentationManager {
             }
         }
     }
+}
     
+// MARK: - Action
+private extension TSPresentationManager {
     @objc func handleLeftEdgeGesture(_ gesture: UIScreenEdgePanGestureRecognizer) {
         dismissAction(translation: gesture.translation(in: gesture.view), state: gesture.state)
     }
