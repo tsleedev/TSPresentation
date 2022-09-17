@@ -7,6 +7,12 @@
 
 import UIKit
 
+public enum TSPresentationGesture {
+    case none
+    case edge
+    case pan
+}
+
 public enum TSPresentationTransitionStyle {
     case none
     case leftToRight
@@ -34,16 +40,27 @@ final public class TSPresentationManager: NSObject {
     public var transitionStyle: TSPresentationTransitionStyle = .bottomToTop
     public var frameSize: TSPresentaionFrameSize = .full
     public var duration: TimeInterval = 0.3
-    public var dimColor = UIColor.black.withAlphaComponent(0.85)
-    public var disableCompactHeight = false
-    public var isNeedPanGesture = false
+    public var dimColor: UIColor = UIColor.black.withAlphaComponent(0.85)
+    public var disableCompactHeight: Bool = false
+    public var gesture: TSPresentationGesture = .none
     
     private let interactor = TSInteractor()
-    private weak var parentViewController: UIViewController?
+    public weak var parentViewController: UIViewController?
     
-    public init(transitionStyle: TSPresentationTransitionStyle = .bottomToTop,
-         dimColor: UIColor = UIColor.black.withAlphaComponent(0.85)) {
+    public init(
+        transitionStyle: TSPresentationTransitionStyle = .bottomToTop,
+        frameSize: TSPresentaionFrameSize = .full,
+        duration: TimeInterval = 0.3,
+        dimColor: UIColor = UIColor.black.withAlphaComponent(0.85),
+        disableCompactHeight: Bool = false,
+        gesture: TSPresentationGesture = .none
+    ) {
         self.transitionStyle = transitionStyle
+        self.frameSize = frameSize
+        self.duration = duration
+        self.dimColor = dimColor
+        self.disableCompactHeight = disableCompactHeight
+        self.gesture = gesture
     }
 }
 
@@ -63,8 +80,13 @@ extension TSPresentationManager: UIViewControllerTransitioningDelegate {
         } else {
             parentViewController = presented
         }
-        removeGesture()
-        if isNeedPanGesture {
+//        removeGesture()
+        switch gesture {
+        case .none:
+            break
+        case .edge:
+            setEdgePanGesture()
+        case .pan:
             setPanGesture()
         }
         return presentationController
@@ -137,6 +159,9 @@ private extension TSPresentationManager {
     
     func dismissAction(translation: CGPoint, state: UIGestureRecognizer.State) {
         guard let parentViewController = parentViewController, let view = parentViewController.view else { return }
+        if let navigationController = parentViewController as? UINavigationController, navigationController.viewControllers.count > 1 {
+            return
+        }
         
         let percentThreshold: CGFloat = 0.4
         

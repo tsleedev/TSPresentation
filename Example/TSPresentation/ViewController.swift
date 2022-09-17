@@ -10,7 +10,7 @@ import UIKit
 import TSPresentation
 
 class ViewController: UIViewController {
-    private let presentationManager = TSPresentationManager()
+    private var presentationManager: TSPresentationManager?
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -21,6 +21,7 @@ class ViewController: UIViewController {
 // MARK: - Helper
 private extension ViewController {
     func moveToNext() {
+        guard let presentationManager = presentationManager else { return }
         let destination = NextViewController()
         let navigationController = UINavigationController(rootViewController: destination)
         navigationController.modalPresentationStyle = .custom
@@ -32,51 +33,51 @@ private extension ViewController {
 // MARK: - IBAction
 private extension ViewController {
     @IBAction func none(_ sender: UIButton) {
-        presentationManager.transitionStyle = .none
-        presentationManager.frameSize = .full
-        presentationManager.isNeedPanGesture = false
+        self.presentationManager = TSPresentationManager(transitionStyle: .none,
+                                                        frameSize: .full,
+                                                        gesture: .none)
         moveToNext()
     }
     
     @IBAction func topToBottom(_ sender: UIButton) {
-        presentationManager.transitionStyle = .topToBottom
-        presentationManager.frameSize = .full
-        presentationManager.isNeedPanGesture = false
+        self.presentationManager = TSPresentationManager(transitionStyle: .topToBottom,
+                                                        frameSize: .full,
+                                                        gesture: .none)
         moveToNext()
     }
     
     @IBAction func leftToRight(_ sender: UIButton) {
-        presentationManager.transitionStyle = .leftToRight
-        presentationManager.frameSize = .length(320)
-        presentationManager.isNeedPanGesture = true
+        self.presentationManager = TSPresentationManager(transitionStyle: .leftToRight,
+                                                        frameSize: .length(320),
+                                                        gesture: .pan)
         moveToNext()
     }
     
     @IBAction func rightToLeft(_ sender: UIButton) {
-        presentationManager.transitionStyle = .rightToLeft
-        presentationManager.frameSize = .full
-        presentationManager.isNeedPanGesture = true
+        self.presentationManager = TSPresentationManager(transitionStyle: .rightToLeft,
+                                                        frameSize: .full,
+                                                        gesture: .pan)
         moveToNext()
     }
     
     @IBAction func bottomToTop(_ sender: UIButton) {
-        presentationManager.transitionStyle = .bottomToTop
-        presentationManager.frameSize = .half
-        presentationManager.isNeedPanGesture = true
+        self.presentationManager = TSPresentationManager(transitionStyle: .bottomToTop,
+                                                        frameSize: .half,
+                                                        gesture: .pan)
         moveToNext()
     }
     
     @IBAction func fadeIn(_ sender: UIButton) {
-        presentationManager.transitionStyle = .fadeIn
-        presentationManager.frameSize = .full
-        presentationManager.isNeedPanGesture = false
+        self.presentationManager = TSPresentationManager(transitionStyle: .fadeIn,
+                                                        frameSize: .full,
+                                                        gesture: .none)
         moveToNext()
     }
     
     @IBAction func push(_ sender: UIButton) {
-        presentationManager.transitionStyle = .push
-        presentationManager.frameSize = .full
-        presentationManager.isNeedPanGesture = true
+        self.presentationManager = TSPresentationManager(transitionStyle: .push,
+                                                        frameSize: .full,
+                                                        gesture: .pan)
         moveToNext()
     }
 }
