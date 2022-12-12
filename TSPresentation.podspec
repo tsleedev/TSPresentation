@@ -8,7 +8,7 @@
 
 Pod::Spec.new do |s|
   s.name             = 'TSPresentation'
-  s.version          = '0.7.0'
+  s.version          = '0.8.0'
   s.summary          = 'A short description of TSPresentation.'
 
 # This description is used to generate tags and improve search results.
@@ -30,7 +30,7 @@ TODO: Add long description of the pod here.
 
   s.ios.deployment_target = '11.0'
 
-  s.source_files = 'TSPresentation/Classes/**/*'
+  s.source_files = 'Sources/TSPresentation/Classes/**/*'
   
   # s.resource_bundles = {
   #   'TSPresentation' => ['TSPresentation/Assets/*.png']
