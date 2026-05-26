@@ -17,7 +17,7 @@ Add the package dependency in `Package.swift`:
 
 ```swift
 dependencies: [
-    .package(url: "https://github.com/tsleedev/TSPresentation.git", from: "0.8.0")
+    .package(url: "https://github.com/tsleedev/TSPresentation.git", from: "0.9.0")
 ]
 ```
 
