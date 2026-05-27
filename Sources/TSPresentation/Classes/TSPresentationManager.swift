@@ -43,17 +43,23 @@ final public class TSPresentationManager: NSObject {
     public var dimColor: UIColor = UIColor.black.withAlphaComponent(0.85)
     public var disableCompactHeight: Bool = false
     public var gesture: TSPresentationGesture = .none
-    
+    /// dismiss 시 presenter의 `viewWillAppear`/`viewDidAppear`를 수동 트리거할지 여부.
+    /// `.custom` modal은 transparent overlay라 UIKit이 presenter lifecycle을 자동 호출하지 않음 —
+    /// 분석 등의 이유로 presenter의 화면 복구가 필요한 modal에만 `true`로 opt-in.
+    /// Default `false` — 단순 confirmation/alert/sheet에서 underlying 화면 카운트 inflation 방지.
+    public var triggersPresenterAppearance: Bool = false
+
     private let interactor = TSInteractor()
     public weak var parentViewController: UIViewController?
-    
+
     public init(
         transitionStyle: TSPresentationTransitionStyle = .bottomToTop,
         frameSize: TSPresentaionFrameSize = .full,
         duration: TimeInterval = 0.3,
         dimColor: UIColor = UIColor.black.withAlphaComponent(0.85),
         disableCompactHeight: Bool = false,
-        gesture: TSPresentationGesture = .none
+        gesture: TSPresentationGesture = .none,
+        triggersPresenterAppearance: Bool = false
     ) {
         self.transitionStyle = transitionStyle
         self.frameSize = frameSize
@@ -61,6 +67,7 @@ final public class TSPresentationManager: NSObject {
         self.dimColor = dimColor
         self.disableCompactHeight = disableCompactHeight
         self.gesture = gesture
+        self.triggersPresenterAppearance = triggersPresenterAppearance
     }
 }
 
@@ -72,7 +79,8 @@ extension TSPresentationManager: UIViewControllerTransitioningDelegate {
             presenting: presenting,
             transitionStyle: transitionStyle,
             frameSize: frameSize,
-            dimColor: dimColor
+            dimColor: dimColor,
+            triggersPresenterAppearance: triggersPresenterAppearance
         )
         if let navigationController = presented as? UINavigationController,
            let rootViewController = navigationController.viewControllers.first {

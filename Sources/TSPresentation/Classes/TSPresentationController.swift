@@ -13,6 +13,7 @@ final class TSPresentationController: UIPresentationController {
     private let transitionStyle: TSPresentationTransitionStyle
     private let frameSize: TSPresentaionFrameSize
     private let dimColor: UIColor
+    private let triggersPresenterAppearance: Bool
     
     override var frameOfPresentedViewInContainerView: CGRect {
         var frame: CGRect = .zero
@@ -61,10 +62,12 @@ final class TSPresentationController: UIPresentationController {
          presenting presentingViewController: UIViewController?,
          transitionStyle: TSPresentationTransitionStyle,
          frameSize: TSPresentaionFrameSize,
-         dimColor: UIColor) {
+         dimColor: UIColor,
+         triggersPresenterAppearance: Bool = false) {
         self.transitionStyle = transitionStyle
         self.frameSize = frameSize
         self.dimColor = dimColor
+        self.triggersPresenterAppearance = triggersPresenterAppearance
         super.init(presentedViewController: presentedViewController, presenting: presentingViewController)
         setupDimmingView()
     }
@@ -97,9 +100,11 @@ final class TSPresentationController: UIPresentationController {
     override func dismissalTransitionWillBegin() {
         // `.custom` modal은 transparent overlay라 UIKit이 presenter를 "사라진 적 없다"고 간주 →
         // dismiss 시 presenter의 viewWillAppear/viewDidAppear가 자동 호출되지 않음.
-        // 분석 인프라 등에서 presenter의 화면 상태 추적이 필요한 경우를 위해
-        // appearance transition을 수동으로 트리거. (dismissalTransitionDidEnd와 쌍)
-        presentingViewController.beginAppearanceTransition(true, animated: true)
+        // 분석 등의 이유로 presenter 화면 복구가 필요한 경우만 opt-in (`triggersPresenterAppearance`).
+        // Default false — confirmation/alert/sheet에서 underlying 화면 카운트 inflation 방지.
+        if triggersPresenterAppearance {
+            presentingViewController.beginAppearanceTransition(true, animated: true)
+        }
 
         guard let coordinator = presentedViewController.transitionCoordinator else {
             dimmingView.alpha = 0.0
@@ -112,7 +117,7 @@ final class TSPresentationController: UIPresentationController {
 
     override func dismissalTransitionDidEnd(_ completed: Bool) {
         super.dismissalTransitionDidEnd(completed)
-        if completed {
+        if completed && triggersPresenterAppearance {
             presentingViewController.endAppearanceTransition()
         }
     }
